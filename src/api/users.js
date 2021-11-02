@@ -4,16 +4,19 @@ export const findUserList=(page, size)=>
 {
   return request
   ({
-    url:'/user',
+    url:'/user/list',
     method:'GET',
     params:{page,size}
   })
 }
-// export const lists=()=>
-// {
-//   return request
-//   ({
-//     url:'/user',
-//     methods:'get'
-//   })
-// }
+
+export const lists=(page, size, user)=>
+{
+  return request
+  ({
+    url:'/user/listpage',
+    methods:'POST',
+    params:{page,size},
+    data:user
+  })
+}

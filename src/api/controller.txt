@@ -1,0 +1,39 @@
+ @PostMapping("/listpage")
+    public FinalResult getUserListPage(@RequestParam(value = "page",defaultValue = "1") Integer page,
+                                       @RequestParam(value = "size",defaultValue = "9") Integer size,
+                                       User user)
+    {
+        Page<User> pages =new Page<>(page,size);
+        QueryWrapper<User> wrapper=getWrapper(user);
+        IPage<User> pageInfo= userService.selectUsers(pages,wrapper);
+        return FinalResult.ok().data("pageInfo",pageInfo);
+    }
+    private QueryWrapper<User> getWrapper(User user)
+    {
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+
+        if(user!=null)
+        {
+            if(user.getDepartmentId()!=null)
+            {
+                queryWrapper.eq("department_id",user.getDepartmentId());
+            }
+            if(!StringUtils.isEmpty(user.getUsername()))
+            {
+                queryWrapper.eq("username",user.getUsername());
+            }
+            if(!StringUtils.isEmpty(user.getEmail()))
+            {
+                queryWrapper.eq("email",user.getEmail());
+            }
+            if(user.getSex()!=null)
+            {
+                queryWrapper.eq("sex",user.getSex());
+            }
+            if(!StringUtils.isEmpty(user.getNickname()))
+            {
+                queryWrapper.eq("nickname",user.getNickname());
+            }
+        }
+        return queryWrapper;
+    }

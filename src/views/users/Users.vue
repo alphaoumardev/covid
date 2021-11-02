@@ -6,36 +6,36 @@
   </el-breadcrumb>
 <!--  The card-->
   <el-card class="box-card">
-    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+    <el-form :inline="true" :model="user" class="demo-form-inline">
       <el-form-item label="Department">
-        <el-select v-model="formInline.city" clearable placeholder="Select">
+        <el-select v-model="user.departmentId" clearable placeholder="Select">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-            <span style="float: left;">{{item.label}}</span>
-            <span style="float: right; color: lightskyblue; font-size: 15px;">{{item.value}}</span>
+            v-for="item in deptList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+            <span style="float: left;">{{item.name}}</span>
+            <span style="float: right; color: lightskyblue; font-size: 15px;"><span class="el-tag el-tag--success el-tag--mini el-tag--light">{{item.deptCount}}</span></span>
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="Username" label-width="80px">
-        <el-input clearable v-model="formInline.user" placeholder="username"/>
+        <el-input clearable v-model="user.username" placeholder="username"/>
       </el-form-item>
       <el-form-item label="Email" label-width="70px">
-        <el-input clearable v-model="formInline.email" placeholder="email"/>
+        <el-input clearable v-model="user.email" placeholder="email"/>
       </el-form-item>
       <el-form-item label="Radio" label-width="70px">
-        <el-radio v-model="formInline.radio"  label="1">A</el-radio>
-        <el-radio v-model="formInline.radio"  label="2">B</el-radio>
-        <el-radio v-model="formInline.radio"  label="3">C</el-radio>
+        <el-radio v-model="user.sex"  label="1">Male</el-radio>
+        <el-radio v-model="user.sex"  label="2">Femal</el-radio>
+        <el-radio v-model="user.sex"  label="3">Secret</el-radio>
       </el-form-item>
       <el-form-item label="Nickname" label-width="70px">
-        <el-input clearable v-model="formInline.nickname" placeholder="nickname"/>
+        <el-input clearable v-model="user.nickname" placeholder="nickname"/>
       </el-form-item>
       <el-form-item label-width="70px">
         <el-button icon="el-icon-refresh" type="info" >Reset</el-button>
-        <el-button icon="el-icon-search" type="primary" @click="onSubmit">Query</el-button>
+        <el-button icon="el-icon-search" type="primary" @click="getUserList">Query</el-button>
         <el-button icon="el-icon-plus" type="success" >Add</el-button>
         <el-button icon="el-icon-download" @click="onSubmit">Nav</el-button>
 
@@ -57,10 +57,11 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="name" label="Department" width="130" sortable/>
-      <el-table-column align="center" prop="nickname" label="nickname" width="80" />
+      <el-table-column align="center" prop="name" label="Department" width="130" sortable>
+      </el-table-column>
+      <el-table-column align="center" prop="nickname" label="nickname" width="90" />
       <el-table-column align="center" prop="birth" label="Birthday" width="110"  sortable/>
-      <el-table-column align="center" prop="email" label="Email" width="150" />
+      <el-table-column align="center" prop="email" label="Email" width="155" />
       <el-table-column align="center" prop="phoneNumber" label="Phone" width="130" />
       <el-table-column align="center"  label="Status" width="90" >
         <template v-slot="scope">
@@ -76,10 +77,9 @@
           <el-button type="danger" icon="el-icon-delete" circle></el-button>
           <el-button type="warning" icon="el-icon-setting" circle></el-button>
       </el-table-column>
-
     </el-table>
       <el-pagination
-        v-model:currentPage="page" style="text-align: center;"
+        :current-page="page" style="text-align: center;"
         :page-sizes="[7, 15, 25, 40]"
         :page-size="7"
         layout="total, sizes, prev, pager, next, jumper"
@@ -92,55 +92,37 @@
 </template>
 
 <script>
-import {findUserList} from "../../api/users";
+import {findUserList,lists} from "../../api/users";
+import {findandcount} from "../../api/department";
+
 
 export default
 {
   name: "Users",
   data() {
     return {
-      formInline:
+      user:
       {
-        user: '',
-        email: '',
-        city:'',
-        radio:'1',
+        username:'',
+        departmentId:'',
         nickname:'',
+        sex:'1',
+        email:'',
       },
+
       page:1,
-      total:'',
+      total:'20',
       status:1,
       userList:[],
       deptList:[],
-      options:
-      [
-          {
-            value: 'Option1',
-            label: 'Option1',
-          },
-          {
-            value: 'Option2',
-            label: 'Option2',
-          },
-          {
-            value: 'Option3',
-            label: 'Option3',
-          },
-          {
-            value: 'Option4',
-            label: 'Option4',
-          },
-          {
-            value: 'Option5',
-            label: 'Option5',
-          },
-        ],
 
     }
   },
   created()
   {
     this.getUserList()
+    this.getDepartment()
+    // this.getUserListpage()
   },
   methods:
   {
@@ -151,7 +133,6 @@ export default
     {
       this.size=val;
       this.getUserList();
-
     },
     handleCurrentChange(val)
     {
@@ -162,10 +143,30 @@ export default
     {
       await findUserList(this.page,this.size).then(res=>
       {
-        this.userList=res.data.data.users
+        this.userList=res.data.data.pageInfo.records
+        this.total=res.data.data.pageInfo.total
+      })
+      console.log(this.userList)
+      console.log(this.total)
+    },
+
+    async getUserListpage()
+    {
+      await lists(this.page,this.size, this.user).then(res=>
+      {
+        this.userListpage=res.data
+        // this.total=res.data.data.pageInfo.total
+      })
+      console.log(this.userListpage)
+    },
+    async getDepartment()
+    {
+      await findandcount().then(res=>
+      {
+        this.deptList=res.data.data.depart
       })
 
-      console.log(this.userList)
+      // console.log(this.deptList)
 
     },
 
