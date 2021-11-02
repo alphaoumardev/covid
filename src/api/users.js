@@ -15,7 +15,7 @@ export const lists=(page, size, user)=>
   return request
   ({
     url:'/user/listpage',
-    methods:'POST',
+    method:'POST',
     params:{page,size},
     data:user
   })

@@ -1,16 +1,13 @@
 <template>
   <div>
     <template v-for="item in this.menuList" :key="item.id">
-      <el-submenu :index="item.id+''"   :desabled="item.desabled" >
+      <el-submenu :index="item.id+''" :desabled="item.desabled" v-if="item.children.length>0">
         <template #title>
-          <i :class="item.icon"/>
-          <span>{{item.menuName }}</span>
+          <i :class="item.icon"/><span>{{item.menuName }}</span>
         </template>
         <MainTree :menuList="item.children"/>
-<!--        <span>{{item.menuName }}</span>-->
-
       </el-submenu>
-      <el-menu-item  :index="item.id" :desabled="item.desabled"  :route="item.url+''" @click="savePath(item.url)">
+      <el-menu-item v-else :index="item.id" :desabled="item.desabled"  :route="item.url+''" @click="savePath(item.url)">
         <i :class="item.icon"/>
         <span>{{item.menuName }}</span>
       </el-menu-item>
@@ -35,7 +32,4 @@ export default
 }
 </script>
 
-<style scoped>
-.el-menu{}
 
-</style>

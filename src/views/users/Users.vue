@@ -34,10 +34,10 @@
         <el-input clearable v-model="user.nickname" placeholder="nickname"/>
       </el-form-item>
       <el-form-item label-width="70px">
-        <el-button icon="el-icon-refresh" type="info" >Reset</el-button>
+        <el-button icon="el-icon-refresh" type="info" @click="resetUser">Reset</el-button>
         <el-button icon="el-icon-search" type="primary" @click="getUserList">Query</el-button>
         <el-button icon="el-icon-plus" type="success" >Add</el-button>
-        <el-button icon="el-icon-download" @click="onSubmit">Nav</el-button>
+        <el-button icon="el-icon-download">Nav</el-button>
 
       </el-form-item>
     </el-form>
@@ -57,8 +57,7 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="name" label="Department" width="130" sortable>
-      </el-table-column>
+      <el-table-column align="center" prop="name" label="Department" width="130" sortable/>
       <el-table-column align="center" prop="nickname" label="nickname" width="90" />
       <el-table-column align="center" prop="birth" label="Birthday" width="110"  sortable/>
       <el-table-column align="center" prop="email" label="Email" width="155" />
@@ -79,7 +78,7 @@
       </el-table-column>
     </el-table>
       <el-pagination
-        :current-page="page" style="text-align: center;"
+        v-model:currentPage="page" style="text-align: center;"
         :page-sizes="[7, 15, 25, 40]"
         :page-size="7"
         layout="total, sizes, prev, pager, next, jumper"
@@ -92,7 +91,7 @@
 </template>
 
 <script>
-import {findUserList,lists} from "../../api/users";
+import {lists} from "../../api/users";
 import {findandcount} from "../../api/department";
 
 
@@ -111,10 +110,11 @@ export default
       },
 
       page:1,
-      total:'20',
+      total:0,
       status:1,
       userList:[],
       deptList:[],
+      userListpage:[],
 
     }
   },
@@ -122,13 +122,11 @@ export default
   {
     this.getUserList()
     this.getDepartment()
-    // this.getUserListpage()
   },
   methods:
   {
-    onSubmit() {
-      console.log('submit!')
-    },
+
+    handleOpen(){},
     handleSizeChange(val)
     {
       this.size=val;
@@ -139,25 +137,22 @@ export default
       this.page=val;
       this.getUserList();
     },
+    resetUser()
+    {
+      this.user.username=''
+      this.user.departmentId=''
+      this.user.nickname=''
+      this.user.sex='1'
+      this.user.email=''
+    },
     async getUserList()
     {
-      await findUserList(this.page,this.size).then(res=>
+      await lists(this.page,this.size, this.user).then(res=>
       {
         this.userList=res.data.data.pageInfo.records
         this.total=res.data.data.pageInfo.total
       })
-      console.log(this.userList)
-      console.log(this.total)
-    },
-
-    async getUserListpage()
-    {
-      await lists(this.page,this.size, this.user).then(res=>
-      {
-        this.userListpage=res.data
-        // this.total=res.data.data.pageInfo.total
-      })
-      console.log(this.userListpage)
+      // console.log(this.userList)
     },
     async getDepartment()
     {
