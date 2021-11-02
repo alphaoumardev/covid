@@ -63,13 +63,13 @@
       <el-table-column align="center" prop="email" label="Email" width="150" />
       <el-table-column align="center" prop="phoneNumber" label="Phone" width="130" />
       <el-table-column align="center"  label="Status" width="90" >
-<!--        <template v-slot="scope">-->
-<!--            <el-switch-->
-<!--              :model="scope.row.status===1"-->
-<!--              active-color="#13ce66"-->
-<!--              inactive-color="#ff4949"-->
-<!--            />-->
-<!--        </template>-->
+        <template v-slot="scope">
+            <el-switch
+              :model="scope.row.status===1"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+            />
+        </template>
       </el-table-column>
       <el-table-column align="center" prop="" label="Operations" width="170" >
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
