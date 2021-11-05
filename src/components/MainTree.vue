@@ -11,7 +11,6 @@
         <i :class="item.icon"/>
         <span>{{item.menuName }}</span>
       </el-menu-item>
-
     </template>
   </div>
 </template>

@@ -52,17 +52,20 @@
         </el-main>
       </el-container>
 
+      <Footer/>
     </el-container>
   </div>
 </template>
 
 <script>
 import MainTree from "@/components/MainTree";
+import Footer from "../components/Footer";
 export default
 {
   name: "Main",
   components:
     {
+      Footer,
       MainTree
     },
   data()
@@ -523,6 +526,7 @@ export default
   .el-menu-demo
   {
     background-color: #001529;
+    //span{span:hover{background-color: red;}}
     i{color: white;}
   }
   .left-box

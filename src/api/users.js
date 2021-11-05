@@ -20,3 +20,12 @@ export const lists=(page, size, user)=>
     data:user
   })
 }
+export const deleteAvatar=(file)=>
+{
+  return request
+  ({
+    url:'/files/deleteAvatar',
+    method:'POST',
+    params:{file},
+  })
+}
