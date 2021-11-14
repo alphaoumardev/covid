@@ -91,7 +91,7 @@
 <!--  The dialog to add the new user-->
   <el-dialog v-model="centerDialogVisible" title="Add New User" @close="onClose" >
     <el-row :gutter="15">
-      <el-form ref="elForm" :model="formData" :rules="rules" size="medium" label-width="100px" label-position="left">
+      <el-form ref="elForm" :model="user" :rules="rules" size="medium" label-width="100px" label-position="left">
         <el-col :span="24">
           <el-form-item label="Avatar"  required>
             <img v-if="image"  :src="image" alt="avatar" class="avatar"/>
@@ -110,57 +110,52 @@
                 :data="imagekey"
                 :on-change="handleChange"
               >
-<!--                <img v-if="image" :src="image" class="avatar" alt="暂无">-->
-<!--                <i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
-<!--              </el-upload>-->
-<!--            :headers="headerObject"-->
-
                 <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>
               </el-upload>
           </el-form-item>
         </el-col><br>
         <el-col :span="12">
           <el-form-item label="Username" prop="username">
-            <el-input v-model="formData.username" placeholder="Your Username" clearable  prefix-icon='el-icon-user-solid' :style="{width: '100%'}"/>
+            <el-input v-model="user.username" placeholder="Your Username" clearable  prefix-icon='el-icon-user-solid' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Password" prop="password">
-            <el-input v-model="formData.password" placeholder="Your Password" clearable   prefix-icon='el-icon-lock' show-password :style="{width: '100%'}"/>
+            <el-input v-model="user.password" placeholder="Your Password" clearable   prefix-icon='el-icon-lock' show-password :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="Gender" prop="sex">
-            <el-radio-group v-model="formData.sex" size="medium">
-              <el-radio v-for="(item, index) in sexOptions" :key="index" :label="item.value" :disabled="item.disabled" border>{{item.label}}</el-radio>
-            </el-radio-group>
-          </el-form-item>
+        <el-col :span="16">
+            <el-form-item label="Gander " prop="sex">
+              <el-radio-group v-model="user.sex" size="medium">
+                <el-radio v-for="(item, index) in sexOptions" :key="index" :label="item.value" :disabled="item.disabled">{{item.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Department" prop="departmentId">
-            <el-select v-model="formData.departmentId" placeholder="Your department" clearable :style="{width: '100%'}">
+            <el-select v-model="user.departmentId" placeholder="Your department" clearable :style="{width: '100%'}">
               <el-option v-for="(item, index) in departments" :key="index" :label="item.name" :value="item.value" :disabled="item.disabled"/>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Nickname" prop="nickname">
-            <el-input v-model="formData.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
+            <el-input v-model="user.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Phone" prop="phoneNumber">
-            <el-input v-model="formData.phoneNumber" placeholder="Your Phone" clearable :style="{width: '100%'}"/>
+            <el-input v-model="user.phoneNumber" placeholder="Your Phone" clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Email" prop="email">
-            <el-input v-model="formData.email" placeholder="Your Email" clearable  prefix-icon='el-icon-message' :style="{width: '100%'}"/>
+            <el-input v-model="user.email" placeholder="Your Email" clearable  prefix-icon='el-icon-message' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Birthday" prop="birth">
-            <el-date-picker v-model="formData.birth" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+            <el-date-picker v-model="user.birth" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
           </el-form-item>
         </el-col>
       </el-form>
@@ -169,7 +164,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="onClose">Cancel</el-button>
-        <el-button type="primary" @click="handelConfirm">Confirm</el-button>
+        <el-button type="primary" @click="addUser">Confirm</el-button>
       </span>
     </template>
   </el-dialog>
@@ -177,7 +172,7 @@
 </template>
 
 <script>
-import {lists,deleteAvatar} from "../../api/users";
+import {addUser, deleteAvatar, lists} from "../../api/users";
 import {findandcount} from "../../api/department";
 
 export default
@@ -187,14 +182,14 @@ export default
   data()
   {
     return {
-      user:
-      {
-        username:'',
-        departmentId:'',
-        nickname:'',
-        sex:'1',
-        email:'',
-      },
+      // user:
+      // {
+      //   username:'',
+      //   departmentId:'',
+      //   nickname:'',
+      //   sex:'1',
+      //   email:'',
+      // },
       page:1,
       total:0,
       userList:[],
@@ -206,12 +201,12 @@ export default
       avatarAction: 'http://localhost:8000/files/upload',
       // headerObject: {Authorization: window.sessionStorage.getItem('token')},
       //THIS IS TO ADD THE NEW USER DIALOG
-      formData:
+      user:
         {
           avatar: null,
           username: undefined,
           email: undefined,
-          sex: 1,
+          sex: '1',
           nickname: undefined,
           password: "",
           phoneNumber: undefined,
@@ -250,29 +245,29 @@ export default
             required: true,  message: 'Select your Birthday',  trigger: 'change'
           }],
       },
-      sexOptions:
-        [{
-          "label": "Male",
-          "value": 1
-        },
-         {
-            "label": "female",
-            "value": 2
-          }],
+      sexOptions: [{
+        "label": "Male",
+        "value": 1
+      }, {
+        "label": "Female",
+        "value": 2
+      }, {
+        "label": "Scret",
+        "value": 3
+      }],
+
+
     }
   },
   created()
   {
     this.getUserList()
     this.getDepartment()
+    this.addUser()
   },
   methods:
   {
-    // onOpen()
-    // {
-    //   this.avatarAction='http://localhost:8000/files/upload'
-    // },
-      handleSizeChange(val)
+    handleSizeChange(val)
     {
       this.size=val;
       this.getUserList();
@@ -321,7 +316,7 @@ export default
       {
         if (!valid) return
         this.centerDialogVisibles = false
-        console.log(this.formData)
+        console.log(this.user)
       })
     },
     avatarBeforeUpload(file)
@@ -348,15 +343,11 @@ export default
       if (res.code === 200)
       {
         const oldAvatar=this.image
-        this.image = res.data.url;
+        this.user.avatar=this.image = res.data.url;
         this.image=URL.createObjectURL(file.raw)
-        this.formData.avatar = res.data.url
 
         this.imagekey = this.imagekey + 1
         this.deleteAvatar(oldAvatar)
-        // console.log(this.formData)
-        this.image = this.formData.avatar
-        console.log(this.image)
       }
       else
       {
@@ -367,9 +358,27 @@ export default
     {
       this.imageShow=true
       this.imagekey = this.imagekey + 1
-      this.image = this.formData.avatar
-      this.formData.avatar = res.data.url
+      this.image = this.user.avatar
+      this.user.avatar = res.data.url
+    },
+    async addUser()
+    {
+      const {data:res}=await addUser(this.user)
+      if(res.code===200)
+      {
+        console.log(res.code)
+        this.$message.success("You have successfully added a new user")
+        this.user={}
+        this.$emit('getUserList')
+        this.$emit('getDepartment')
+      }
+
+    else
+      {
+        this.$message.error("Adding new user has failed"+res.message)
+      }
     }
+
   }
 }
 </script>

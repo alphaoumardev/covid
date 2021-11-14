@@ -45,8 +45,10 @@
             </el-dropdown>
         </div>
       </el-header>
+<!--      <img src="../assets/img/logo4.png" alt="alpha"/>-->
 
       <el-container>
+
         <el-main>
           <router-view/>
         </el-main>

@@ -1,8 +1,3 @@
-用户登录名称 alpha@1787129010927684.onaliyun.com
-登录密码 !b5be7CE$bijMFqq0OQKx1BD$LFEn$ox
-AccessKey ID LTAI5tLDnEpVEQ2bMGAawHPd
-AccessKey Secret fbqOJjK9q0ijBuDdEGojyjyB8v8jaA
-
 diallo
 
  @PostMapping("/listpage")

@@ -29,3 +29,12 @@ export const deleteAvatar=(file)=>
     params:{file},
   })
 }
+export const addUser=(user)=>
+{
+  return request
+  ({
+    url:'/user/adduser',
+    method:'POST',
+    data:user
+  })
+}
