@@ -7,23 +7,8 @@
 <!--  The card-->
   <el-card class="box-card">
     <el-form :inline="true" :model="user" class="demo-form-inline">
-      <el-form-item label="Department" style="margin-left: 30px;">
-        <el-select v-model="user.departmentId" clearable placeholder="Select">
-          <el-option
-            v-for="item in departments"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id">
-            <span style="float: left;">{{item.name}}</span>
-            <span style="float: right; color: lightskyblue; font-size: 15px;"><span class="el-tag el-tag--success el-tag--mini el-tag--light">{{item.deptCount}}</span></span>
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="Username" label-width="80px">
         <el-input clearable v-model="user.username" placeholder="username"/>
-      </el-form-item>
-      <el-form-item label="Email" label-width="73px">
-        <el-input clearable v-model="user.email" placeholder="email"/>
       </el-form-item>
       <el-form-item label="Nickname" label-width="80px">
         <el-input clearable v-model="user.nickname" placeholder="nickname"/>
@@ -41,11 +26,8 @@
     </el-form>
 
 <!--    The table-->
-    <el-table
-      :data="userList"
-      style="width: 100%" border
-      max-height="400"
-    >
+    <el-table :data="userList" stripe style="width: 100%" border max-height="400">
+
       <el-table-column align="center" prop="id" label="#"  width="80"  />
       <el-table-column align="center" prop="username" label="Username"  />
       <el-table-column align="center" prop="sex" label="Gender"  >
@@ -55,23 +37,9 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="name" label="Department"  sortable/>
       <el-table-column align="center" prop="nickname" label="nickname" />
-      <el-table-column align="center" prop="birth" label="Birthday"   sortable/>
-      <el-table-column align="center" prop="email" label="Email" width="200" />
-      <el-table-column align="center" prop="phoneNumber" label="Phone"  />
-      <el-table-column align="center" label="Status" >
-        <template v-slot="scope">
-          <el-switch
-            v-model="status"
-            inline-prompt
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            active-text="是"
-            inactive-text="否"
-          />
-        </template>
-      </el-table-column>
+      <el-table-column align="center" prop="age" label="Age"   sortable/>
+      <el-table-column align="center" prop="address" label="Address" width="200" />
       <el-table-column align="center" prop="" label="Operations" width="170" >
           <el-button type="primary" icon="el-icon-edit" circle></el-button>
           <el-button type="danger" icon="el-icon-delete" circle></el-button>
@@ -132,30 +100,18 @@
             </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Department" prop="departmentId">
-            <el-select v-model="user.departmentId" placeholder="Your department" clearable :style="{width: '100%'}">
-              <el-option v-for="(item, index) in departments" :key="index" :label="item.name" :value="item.value" :disabled="item.disabled"/>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="Nickname" prop="nickname">
             <el-input v-model="user.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Phone" prop="phoneNumber">
-            <el-input v-model="user.phoneNumber" placeholder="Your Phone" clearable :style="{width: '100%'}"/>
+          <el-form-item label="Address" prop="address">
+            <el-input v-model="user.address" placeholder="Your address" clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Email" prop="email">
-            <el-input v-model="user.email" placeholder="Your Email" clearable  prefix-icon='el-icon-message' :style="{width: '100%'}"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="Birthday" prop="birth">
-            <el-date-picker v-model="user.birth" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+          <el-form-item label="Birthday" prop="age">
+            <el-date-picker v-model="user.age" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
           </el-form-item>
         </el-col>
       </el-form>
@@ -172,9 +128,7 @@
 </template>
 
 <script>
-import {addUser, deleteAvatar, lists} from "../../api/users";
-import {findandcount} from "../../api/department";
-
+import {addUser, deleteAvatar, lists} from "@/api/users";
 export default
 {
   name: "Users",
@@ -193,28 +147,13 @@ export default
       avatarAction: 'http://localhost:8000/files/upload',
       // headerObject: {Authorization: window.sessionStorage.getItem('token')},
       //THIS IS TO ADD THE NEW USER DIALOG
-      user:
-        {
-          avatar: null,
-          username: undefined,
-          email: undefined,
-          sex: '1',
-          nickname: undefined,
-          password: "",
-          phoneNumber: undefined,
-          birth: null,
-          departmentId: undefined,
-        },
+      user:{},
       image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
 
       rules: {
         username:
           [{
             required: true, message: 'Prompt your Username',trigger: 'blur'
-          }],
-        email:
-          [{
-            required: true, message: 'Prompt your Email',trigger: 'blur'
           }],
         sex:
           [{
@@ -228,33 +167,32 @@ export default
           [{
             required: true, message: 'Prompt your Password', trigger: 'blur'
           }],
-        phoneNumber:
+        address:
           [{
-            required: true, message: 'Prompt your Phone', trigger: 'blur'
+            required: true, message: 'Prompt your address', trigger: 'blur'
           }],
-        birth:
+        age:
           [{
-            required: true,  message: 'Select your Birthday',  trigger: 'change'
+            required: true,  message: 'Select your age',  trigger: 'change'
           }],
       },
-      sexOptions: [{
-        "label": "Male",
-        "value": 1
-      }, {
-        "label": "Female",
-        "value": 2
-      }, {
-        "label": "Scret",
-        "value": 3
-      }],
-
-
+      sexOptions:  [
+        {
+          "label": "Male",
+          "value": 1
+        },
+        {
+          "label": "Female",
+          "value": 2
+        }, {
+          "label": "Scret",
+          "value": 3
+        }],
     }
   },
   created()
   {
     this.getUserList()
-    this.getDepartment()
     this.addUser()
   },
   methods:
@@ -272,10 +210,9 @@ export default
     resetUser()
     {
       this.user.username=''
-      this.user.departmentId=''
       this.user.nickname=''
       this.user.sex='1'
-      this.user.email=''
+      this.user.address=''
     },
     async getUserList()
     {
@@ -289,14 +226,11 @@ export default
       // console.log(this.forbidden)
 
     },
-    async getDepartment()
+    handleChange()
     {
-      await findandcount().then(res=>
-      {
-        this.departments=res.data.data.depart
-      })
-      // console.log(this.departments)
+
     },
+
     async deleteOldAvatar(oldImage)
     {
       await deleteAvatar(oldImage)
