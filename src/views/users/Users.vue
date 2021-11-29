@@ -182,14 +182,6 @@ export default
   data()
   {
     return {
-      // user:
-      // {
-      //   username:'',
-      //   departmentId:'',
-      //   nickname:'',
-      //   sex:'1',
-      //   email:'',
-      // },
       page:1,
       total:0,
       userList:[],
@@ -375,7 +367,7 @@ export default
 
     else
       {
-        this.$message.error("Adding new user has failed"+res.message)
+        // this.$message.error("Adding new user has failed"+res.message)
       }
     }
 
