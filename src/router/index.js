@@ -8,12 +8,12 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('../views/About.vue')
+    component: () => import('@/views/About.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('@/views/Login.vue')
   },
   {
     path: '/register',
@@ -30,6 +30,11 @@ const routes = [
           path: '/users',
           name: 'Users',
           component: () => import('../views/users/Users.vue'),
+        },
+        {
+          path: '/book',
+          name: 'Book',
+          component: () => import('../views/users/Book.vue'),
         }
       ]
   },

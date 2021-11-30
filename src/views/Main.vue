@@ -35,11 +35,12 @@
         <div class="right-box">
             <el-dropdown >
               <img src="../assets/img/timg.gif" alt="Aj">
+<!--              <span>{{user.nickName}}</span>-->
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item><i class="el-icon-house"/>Home</el-dropdown-item>
-                  <el-dropdown-item><i class="el-icon-microphone"/>交流</el-dropdown-item>
-                  <el-dropdown-item><i class="el-icon-switch-button"/>Logout</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/welcome')"><i class="el-icon-house"/>Home</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/users')"><i class="el-icon-microphone"/>My Account</el-dropdown-item>
+                  <el-dropdown-item @click="$router.push('/login')"><i class="el-icon-switch-button"/>Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -70,6 +71,7 @@ export default
       Footer,
       MainTree
     },
+  // props:['user'],
   data()
   {
     return{
@@ -115,6 +117,19 @@ export default
           "type": 0,
           "children": []
         },
+          {
+            "id": 223,
+            "parentId": 1,
+            "menuName": "Books",
+            "url": "/book",
+            "icon": "el-icon-box",
+            "orderNum": 2,
+            "open": 0,
+            "disabled": false,
+            "perms": "users",
+            "type": 0,
+            "children": []
+          },
         {
           "id": 321,
           "parentId": 1,

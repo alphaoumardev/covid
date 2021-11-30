@@ -1,7 +1,7 @@
 <template>
   <div class="register-container">
     <div class="register-left">
-      <img src="../assets/img/covid.png" alt="The logo"  style="width:500px; height: 500px; border-radius: 10px;">
+      <img src="../assets/img/log.jpg" alt="The logo"  style="width:500px; height: 500px; border-radius: 10px;">
     </div>
     <div class="register-box">
       <!-- 头像 -->
@@ -12,14 +12,8 @@
       <div class="title">Registration </div>
       <!-- Registration -->
       <el-form ref="registerFormRef" class="register-form" :model="registerForm" :rules="registerFormRules" label-position="top">
-        <el-form-item prop="name" label="Name">
+        <el-form-item prop="nickName" label="Name">
           <el-input placeholder="Please input your name" prefix-icon="el-icon-user" v-model="registerForm.name"/>
-        </el-form-item>
-        <el-form-item prop="email" label="Email">
-          <el-input placeholder="Please input your email" prefix-icon="bi bi-envelope" v-model="registerForm.email"/>
-        </el-form-item>
-        <el-form-item prop="phone" label="Phone">
-          <el-input placeholder="Please input your phone" prefix-icon="bi bi-phone" v-model="registerForm.phone"/>
         </el-form-item>
         <el-form-item prop="address" label="Address">
           <el-input placeholder="Please fill your address" prefix-icon="bi bi-geo-alt" v-model="registerForm.address"/>
@@ -33,15 +27,14 @@
         <el-form-item prop="username" label="Username">
           <el-input placeholder="Please input your username" prefix-icon="el-icon-user" v-model="registerForm.username"/>
         </el-form-item>
-
         <el-form-item prop="password" label="Password">
           <el-input placeholder="Please input your password" show-password prefix-icon="iconfont icon-3702mima" v-model="registerForm.password"/>
         </el-form-item>
-        <el-form-item prop="password">
-          <el-input placeholder="confirm your password" show-password prefix-icon="iconfont icon-3702mima" v-model="registerForm.password"/>
+        <el-form-item prop="confirm">
+          <el-input placeholder="confirm your password" show-password prefix-icon="iconfont icon-3702mima" v-model="registerForm.confirm"/>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class="register-btn" @click="login">Register</el-button>
+          <el-button type="primary" class="register-btn" @click="register">Register</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -55,30 +48,11 @@ export default
   data(){
     return {
       // 表单的数据绑定对象
-      registerForm:
-          {
-            name: '',
-            email: '',
-            phone: '',
-            gender: '',
-            address: '',
-            username: '',
-            password: ''
-          },
-      // 表单的校验规则
+      registerForm:{},
+
       registerFormRules:
       {
         name:
-            [
-              { required: true, message: '请输入登陆账户', trigger: 'blur' },
-              { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-            ],
-        email:
-            [
-              { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
-            ],
-        phone:
             [
               { required: true, message: '请输入登陆账户', trigger: 'blur' },
               { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
@@ -99,6 +73,11 @@ export default
               { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
             ],
         password:
+            [
+              { required: true, message: '请输入登陆密码', trigger: 'blur' },
+              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+            ],
+        confirm:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
               { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
@@ -146,7 +125,7 @@ export default
 .register-box
 {
   width: 500px;
-  height: 950px;
+  height: 720px;
   background: #fff;
   padding: 0;
   border-radius: 8px;

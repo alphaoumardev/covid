@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-left">
-      <img src="../assets/img/background.jpg" alt="The logo"  style="width:500px; height: 450px; border-radius: 20px;">
+      <img src="@/assets/img/log.jpg" alt="The logo"  style="width:500px; height: 450px; border-radius: 20px;">
     </div>
     <div class="login-box">
       <!-- 头像 -->
@@ -11,23 +11,23 @@
       <!-- 标题 -->
       <div class="title"> Log in </div>
       <!-- 登陆表单 -->
-      <el-form ref="loginFormRef" class="login-form" :model="loginForm" :rules="loginFormRules" label-position="top">
+      <el-form ref="form" class="login-form" :model="form" :rules="rules" label-position="top">
         <el-form-item prop="username" label="Username">
-          <el-input placeholder="Please input your username" prefix-icon="el-icon-user" v-model="loginForm.username"/>
+          <el-input  v-model="form.username" placeholder="Please input your username" prefix-icon="el-icon-user" />
         </el-form-item>
         <el-form-item prop="password" label="Password">
-          <el-input placeholder="Please input your password" show-password prefix-icon="iconfont icon-3702mima" v-model="loginForm.password"></el-input>
+          <el-input v-model="form.password" placeholder="Please input your password" show-password prefix-icon="iconfont icon-3702mima" />
         </el-form-item>
-        <el-form-item prop="verifyCode">
-          <div class="verifyCode_box">
-            <el-input v-model="loginForm.verifyCode" type="text" placeholder="please input the code" prefix-icon="el-icon-mobile"
-                      class="verifyCode"></el-input>
-            <img src="../assets/img/code.gif" alt="" class="verifyCode_img" @click="newVerifyCode">
-          </div>
-        </el-form-item>
+<!--        <el-form-item prop="verifyCode">-->
+<!--          <div class="verifyCode_box">-->
+<!--            <el-input v-model="form.verifyCode" type="text" placeholder="please input the code" prefix-icon="el-icon-mobile"-->
+<!--                      class="verifyCode"></el-input>-->
+<!--            <img src="../assets/img/code.gif" alt="" class="verifyCode_img" @click="newVerifyCode">-->
+<!--          </div>-->
+<!--        </el-form-item>-->
 
         <el-form-item>
-          <el-button type="primary" class="login-btn" @click="Login">login</el-button>
+          <el-button type="primary" class="login-btn" @click="submitLogin">login</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -35,17 +35,14 @@
 </template>
 
 <script>
+import request from "@/axios/request";
+
 export default {
   data(){
     return {
-      // 表单的数据绑定对象
-      loginForm:
-          {
-            username:'',
-            password:''
-          },
-      // 表单的校验规则
-      loginFormRules:{
+      form:{},
+      rules:
+      {
         username:
             [
               { required: true, message: '请输入登陆账户', trigger: 'blur' },
@@ -54,30 +51,33 @@ export default {
         password:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+              { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
             ]
       }
     }
   },
   methods:
   {
-    login(){
-      // 判断是否校验成功
-      this.$refs.loginFormRef.validate(async valid =>
+    submitLogin()
+    {
+      this.$refs['form'].validate(valid =>
       {
-        if(!valid){return this.$message.error("You have an error try it again")}
-        // 发送请求判断是否登陆成功
-        const {data:res} = await this.$api.post('Login.vue',this.loginForm)
-
-        if(res.meta.status !== 200){ return this.$message.error('登陆失败')}
-
-        this.$message.success('登陆成功')
-        // 将用户信息保存到sessionStorage中
-        sessionStorage.setItem('user_session',JSON.stringify(res.data))
-        await this.$router.push('/home')
+        if(valid)
+        {
+          request.post("user/login", this.form).then(res=>
+          {
+            if(res.code==='0')
+            {
+              this.$message({type:"success",message:"登陆成功"})
+              // sessionStorage.setItem("user", JSON.stringify(res.data))
+              this.$router.push('/users')
+            }
+            else  this.$message({type:"success",message:"登陆失败"})
+          })
+        }
       })
-    }
-  }
+  },
+},
 }
 </script>
 

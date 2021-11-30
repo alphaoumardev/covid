@@ -6,26 +6,13 @@
   </el-breadcrumb>
 <!--  The card-->
   <el-card class="box-card">
-    <el-form :inline="true" :model="user" class="demo-form-inline">
-      <el-form-item label="Username" label-width="80px">
-        <el-input clearable v-model="user.username" placeholder="username"/>
-      </el-form-item>
-      <el-form-item label="Nickname" label-width="80px">
-        <el-input clearable v-model="user.nickname" placeholder="nickname"/>
-      </el-form-item>
-      <el-form-item label="Radio" label-width="80px">
-        <el-radio v-model="user.sex"  label="1">Male</el-radio>
-        <el-radio v-model="user.sex"  label="2">Femal</el-radio>
-        <el-radio v-model="user.sex"  label="3">Secret</el-radio>
-      </el-form-item>
-      <el-form-item label-width="100px" style="margin-right:  90px; float: right;">
-        <el-button icon="el-icon-refresh" type="info" @click="resetUser">Reset</el-button>
-        <el-button icon="el-icon-search" type="primary" @click="getUserList">Query</el-button>
-        <el-button icon="el-icon-plus" type="success" @click="centerDialogVisible = true">Adds</el-button>
-      </el-form-item>
-    </el-form>
+    <div style="float: right;">
+      <el-input v-model="search"  placeholder="search" clearable style="width: 45%; margin: 10px;"/>
+      <el-button icon="el-icon-search" type="primary" @click="getUserList">Query</el-button>
+      <el-button icon="el-icon-plus" type="success" @click="openDialog">Add</el-button>
+    </div>
 
-<!--    The table-->
+<!--    The table To display the users-->
     <el-table :data="userList" stripe style="width: 100%" border max-height="400">
 
       <el-table-column align="center" prop="id" label="#"  width="80"  />
@@ -37,29 +24,34 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="nickname" label="nickname" />
+      <el-table-column align="center" prop="nickName" label="nickname" />
       <el-table-column align="center" prop="age" label="Age"   sortable/>
       <el-table-column align="center" prop="address" label="Address" width="200" />
       <el-table-column align="center" prop="" label="Operations" width="170" >
-          <el-button type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button type="danger" icon="el-icon-delete" circle></el-button>
-          <el-button type="warning" icon="el-icon-setting" circle></el-button>
+        <template #default="scope">
+          <el-button type="primary" icon="el-icon-edit" circle @click="edit(scope.row)"/>
+          <el-popconfirm title="Are you sure to delete it?" @confirm="deleteRow(scope.row.id)">
+            <template #reference>
+              <el-button type="danger" icon="el-icon-delete" circle/>
+            </template>
+          </el-popconfirm>
+        </template>
       </el-table-column>
     </el-table>
       <el-pagination
-        v-model:currentPage="page" style="text-align: center;"
+        :model:currentPage="page" style="text-align: center;"
         :page-sizes="[7, 15, 25, 40]"
-        :page-size="7"
+        :page-size="size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       ></el-pagination>
   </el-card>
-<!--  The dialog to add the new user-->
+<!--  The dialog to add the new userForm-->
   <el-dialog v-model="centerDialogVisible" title="Add New User" @close="onClose" >
     <el-row :gutter="15">
-      <el-form ref="elForm" :model="user" :rules="rules" size="medium" label-width="100px" label-position="left">
+      <el-form ref="elForm" :model="userForm" :rules="rules" size="medium" label-width="100px" label-position="left">
         <el-col :span="24">
           <el-form-item label="Avatar"  required>
             <img v-if="image"  :src="image" alt="avatar" class="avatar"/>
@@ -84,34 +76,34 @@
         </el-col><br>
         <el-col :span="12">
           <el-form-item label="Username" prop="username">
-            <el-input v-model="user.username" placeholder="Your Username" clearable  prefix-icon='el-icon-user-solid' :style="{width: '100%'}"/>
+            <el-input v-model="userForm.username" placeholder="Your Username" clearable  prefix-icon='el-icon-user-solid' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Password" prop="password">
-            <el-input v-model="user.password" placeholder="Your Password" clearable   prefix-icon='el-icon-lock' show-password :style="{width: '100%'}"/>
+            <el-input v-model="userForm.password" placeholder="Your Password" clearable   prefix-icon='el-icon-lock' show-password :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="16">
             <el-form-item label="Gander " prop="sex">
-              <el-radio-group v-model="user.sex" size="medium">
+              <el-radio-group v-model="userForm.sex" size="medium">
                 <el-radio v-for="(item, index) in sexOptions" :key="index" :label="item.value" :disabled="item.disabled">{{item.label}}</el-radio>
               </el-radio-group>
             </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Nickname" prop="nickname">
-            <el-input v-model="user.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
+            <el-input v-model="userForm.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Address" prop="address">
-            <el-input v-model="user.address" placeholder="Your address" clearable :style="{width: '100%'}"/>
+            <el-input v-model="userForm.address" placeholder="Your address" clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="Birthday" prop="age">
-            <el-date-picker v-model="user.age" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+            <el-date-picker v-model="userForm.age" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
           </el-form-item>
         </el-col>
       </el-form>
@@ -128,26 +120,24 @@
 </template>
 
 <script>
-import {addUser, deleteAvatar, lists} from "@/api/users";
+import request from "../../axios/request";
 export default
 {
   name: "Users",
-
   data()
   {
     return {
       page:1,
+      size:10,
       total:0,
+      search:'',
       userList:[],
-      status:true,
-      departments:[],
       imagekey:0,
       imageShow:true,
       centerDialogVisible:false,
-      avatarAction: 'http://localhost:8000/files/upload',
-      // headerObject: {Authorization: window.sessionStorage.getItem('token')},
+      avatarAction: 'http://localhost:9000/files/upload',
       //THIS IS TO ADD THE NEW USER DIALOG
-      user:{},
+      userForm:{},
       image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
 
       rules: {
@@ -193,7 +183,6 @@ export default
   created()
   {
     this.getUserList()
-    this.addUser()
   },
   methods:
   {
@@ -207,106 +196,70 @@ export default
       this.page=val;
       this.getUserList();
     },
-    resetUser()
+    openDialog()
     {
-      this.user.username=''
-      this.user.nickname=''
-      this.user.sex='1'
-      this.user.address=''
+      this.centerDialogVisible = true
     },
-    async getUserList()
+    edit(row)
     {
-      await lists(this.page,this.size, this.user).then(res=>
+      this.centerDialogVisible=true
+      this.userForm.JSON.parse(JSON.stringify(row))
+    },
+    addUser()
+    {
+      if(this.userForm.id)
       {
-        this.userList=res.data.data.pageInfo.records
-        this.total=res.data.data.pageInfo.total
-        // this.forbidden=res.data.data.pageInfo.records.id.forbidden
-      })
-      // console.log(this.userList)
-      // console.log(this.forbidden)
-
+        request.put("/user/update",this.userForm).then(res =>
+        {
+          if(res.code==='0')
+          {
+            this.getUserList()
+            return this.$message.success("You have successfully updated the user")
+          }
+          return this.$message.error("You got an error")
+        })
+      }
+      else
+      {
+        request.post("/user/add",this.userForm).then(res =>
+        {
+          if(res.code==='0')
+          {
+            this.getUserList()
+            return this.$message.success("You have successfully added a new user")
+          }
+          return this.$message.error("You got an error")
+        })
+      }
+      this.centerDialogVisible=false
+    },
+    getUserList()
+    {
+      request.get("/user/list",
+        {params:{page:this.page,size:this.size,search:this.search}})
+        .then(res=>
+        {
+          this.userList = res.data.records
+          this.total = res.data.total
+          console.log(this.total)
+        })
     },
     handleChange()
     {
 
     },
-
-    async deleteOldAvatar(oldImage)
+    deleteRow(id)
     {
-      await deleteAvatar(oldImage)
-    },
-    // THIS IS TO ADD THE NEW USER DIALOG
-    handelConfirm()
-    {
-      this.$refs['elForm'].validate(valid =>
+      request.delete(`user/delete/${id}`).then(res=>
       {
-        if (!valid) return
-        this.centerDialogVisibles = false
-        console.log(this.user)
+        if(res.code=='0')
+        {
+          this.getUserList()
+        }
       })
-    },
-    avatarBeforeUpload(file)
-    {
-      let isRightSize = file.size / 1024 / 1024 < 2
-      if (!isRightSize)
-      {
-        this.$message.error('The photo is more than 2MB please change it and try again')
-      }
-      let isAccept = new RegExp('image/*').test(file.type)
-      if (!isAccept) {
-        this.$message.error('You have to choose an image ')
-      }
-      return isRightSize && isAccept
-    },
-    // 上传成功后的回调函数
-    onClose()
-    {
-      this.$refs['elForm'].resetFields()
-      this.centerDialogVisible = false;
-    },
-    handleSuccess (res, file)
-    {
-      if (res.code === 200)
-      {
-        const oldAvatar=this.image
-        this.user.avatar=this.image = res.data.url;
-        this.image=URL.createObjectURL(file.raw)
-
-        this.imagekey = this.imagekey + 1
-        this.deleteAvatar(oldAvatar)
-      }
-      else
-      {
-        this.$message.error(res.message)
-      }
-    },
-    closeImage()
-    {
-      this.imageShow=true
-      this.imagekey = this.imagekey + 1
-      this.image = this.user.avatar
-      this.user.avatar = res.data.url
-    },
-    async addUser()
-    {
-      const {data:res}=await addUser(this.user)
-      if(res.code===200)
-      {
-        console.log(res.code)
-        this.$message.success("You have successfully added a new user")
-        this.user={}
-        this.$emit('getUserList')
-        this.$emit('getDepartment')
-      }
-
-    else
-      {
-        // this.$message.error("Adding new user has failed"+res.message)
-      }
     }
 
-  }
-}
+}}
 </script>
 
 <style scoped lang="less">
