@@ -49,30 +49,30 @@
       ></el-pagination>
   </el-card>
 <!--  The dialog to add the new userForm-->
-  <el-dialog v-model="centerDialogVisible" title="Add New User" @close="onClose" >
+  <el-dialog v-model="dialog" :title="title" @close="onClose" >
     <el-row :gutter="15">
       <el-form ref="elForm" :model="userForm" :rules="rules" size="medium" label-width="100px" label-position="left">
         <el-col :span="24">
-          <el-form-item label="Avatar"  required>
-            <img v-if="image"  :src="image" alt="avatar" class="avatar"/>
-            <i v-else class="el-icon-plus avatar-uploader-icon"/>
-            <el-upload
-                ref="avatar"
-                v-model="image"
-                :action="avatarAction"
-                :before-upload="avatarBeforeUpload"
-                list-type="picture" accept="image/*"
-                :auto-upload="true"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                @close="closeImage"
-                v-show="imageShow"
-                :data="imagekey"
-                :on-change="handleChange"
-              >
-                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>
-              </el-upload>
-          </el-form-item>
+<!--          <el-form-item label="Avatar"  required>-->
+<!--            <img v-if="image"  :src="image" alt="avatar" class="avatar"/>-->
+<!--            <i v-else class="el-icon-plus avatar-uploader-icon"/>-->
+<!--            <el-upload-->
+<!--                ref="avatar"-->
+<!--                v-model="image"-->
+<!--                :action="avatarAction"-->
+<!--                :before-upload="avatarBeforeUpload"-->
+<!--                list-type="picture" accept="image/*"-->
+<!--                :auto-upload="true"-->
+<!--                :show-file-list="false"-->
+<!--                :on-success="handleSuccess"-->
+<!--                @close="closeImage"-->
+<!--                v-show="imageShow"-->
+<!--                :data="imagekey"-->
+<!--                :on-change="handleChange"-->
+<!--              >-->
+<!--                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>-->
+<!--              </el-upload>-->
+<!--          </el-form-item>-->
         </el-col><br>
         <el-col :span="12">
           <el-form-item label="Username" prop="username">
@@ -97,15 +97,16 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Address" prop="address">
-            <el-input v-model="userForm.address" placeholder="Your address" clearable :style="{width: '100%'}"/>
+          <el-form-item label="Birthday" prop="age">
+            <el-input v-model="userForm.age"  placeholder="Your Age" prefix-icon='el-icon-timer' clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="Birthday" prop="age">
-            <el-date-picker v-model="userForm.age" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+          <el-form-item label="Address" prop="address">
+            <el-input v-model="userForm.address" placeholder="Your address" prefix-icon='el-icon-place' clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
+
       </el-form>
     </el-row>
 
@@ -131,14 +132,13 @@ export default
       size:10,
       total:0,
       search:'',
+      title:'',
       userList:[],
-      imagekey:0,
-      imageShow:true,
-      centerDialogVisible:false,
-      avatarAction: 'http://localhost:9000/files/upload',
-      //THIS IS TO ADD THE NEW USER DIALOG
       userForm:{},
-      image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
+      dialog:false,
+      // avatarAction: 'http://localhost:9000/files/upload',
+      //THIS IS TO ADD THE NEW USER DIALOG
+      // image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
 
       rules: {
         username:
@@ -198,11 +198,18 @@ export default
     },
     openDialog()
     {
-      this.centerDialogVisible = true
+      this.title="Add New User"
+      this.dialog = true
+    },
+    onClose()
+    {
+      this.dialog=false
+      this.userForm={}
     },
     edit(row)
     {
-      this.centerDialogVisible=true
+      this.title="Edit User"
+      this.dialog=true
       this.userForm.JSON.parse(JSON.stringify(row))
     },
     addUser()
@@ -231,7 +238,7 @@ export default
           return this.$message.error("You got an error")
         })
       }
-      this.centerDialogVisible=false
+      this.dialog=false
     },
     getUserList()
     {
