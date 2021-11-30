@@ -43,54 +43,49 @@
       ></el-pagination>
     </el-card>
     <!--  The dialog to add the new bookForm-->
-    <el-dialog v-model="centerDialogVisible" title="Add New Book" @close="onClose" >
+    <el-dialog v-model="dialog" :title="title" @close="onClose" >
       <el-row :gutter="15">
         <el-form ref="elForm" :model="bookForm" :rules="rules" size="medium" label-width="100px" label-position="left">
           <el-col :span="24">
-            <el-form-item label="Avatar"  required>
-              <img v-if="image"  :src="image" alt="avatar" class="avatar"/>
-              <i v-else class="el-icon-plus avatar-uploader-icon"/>
-              <el-upload
-                  ref="avatar"
-                  v-model="image"
-                  :action="avatarAction"
-                  :before-upload="avatarBeforeUpload"
-                  list-type="picture" accept="image/*"
-                  :auto-upload="true"
-                  :show-file-list="false"
-                  :on-success="handleSuccess"
-                  @close="closeImage"
-                  v-show="imageShow"
-                  :data="imagekey"
-                  :on-change="handleChange"
-              >
-                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>
-              </el-upload>
-            </el-form-item>
+<!--            <el-form-item label="Avatar"  required>-->
+<!--              <img v-if="image"  :src="image" alt="avatar" class="avatar"/>-->
+<!--              <i v-else class="el-icon-plus avatar-uploader-icon"/>-->
+<!--              <el-upload-->
+<!--                  ref="avatar"-->
+<!--                  v-model="image"-->
+<!--                  :action="avatarAction"-->
+<!--                  :before-upload="avatarBeforeUpload"-->
+<!--                  list-type="picture" accept="image/*"-->
+<!--                  :auto-upload="true"-->
+<!--                  :show-file-list="false"-->
+<!--                  :on-success="handleSuccess"-->
+<!--                  @close="closeImage"-->
+<!--                  v-show="imageShow"-->
+<!--                  :data="imagekey"-->
+<!--                  :on-change="handleChange"-->
+<!--              >-->
+<!--                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>-->
+<!--              </el-upload>-->
+<!--            </el-form-item>-->
           </el-col><br>
           <el-col :span="12">
-            <el-form-item label="Bookname" prop="bookname">
-              <el-input v-model="bookForm.bookname" placeholder="Your Bookname" clearable  prefix-icon='el-icon-book-solid' :style="{width: '100%'}"/>
+            <el-form-item label="Bookname" prop="name">
+              <el-input v-model="bookForm.name" placeholder="The Book name" clearable  prefix-icon='el-icon-book-solid' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Password" prop="password">
-              <el-input v-model="bookForm.password" placeholder="Your Password" clearable   prefix-icon='el-icon-lock' show-password :style="{width: '100%'}"/>
+            <el-form-item label="Price" prop="price">
+              <el-input v-model="bookForm.price" placeholder="The price" clearable   prefix-icon='el-icon-lock' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Nickname" prop="nickname">
-              <el-input v-model="bookForm.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-book' :style="{width: '100%'}"/>
+            <el-form-item label="Author" prop="author">
+              <el-input v-model="bookForm.author" placeholder="The author" clearable  prefix-icon='el-icon-book' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Address" prop="address">
-              <el-input v-model="bookForm.address" placeholder="Your address" clearable :style="{width: '100%'}"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="Birthday" prop="age">
-              <el-date-picker v-model="bookForm.age" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+            <el-form-item label="Publication" prop="createTime">
+              <el-date-picker v-model="bookForm.createTime" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
             </el-form-item>
           </el-col>
         </el-form>
@@ -117,40 +112,33 @@ export default
       page:1,
       size:10,
       total:0,
+      title:'',
       search:'',
       bookList:[],
-      imagekey:0,
-      imageShow:true,
-      centerDialogVisible:false,
-      avatarAction: 'http://localhost:9000/files/upload',
-      //THIS IS TO ADD THE NEW USER DIALOG
       bookForm:{},
-      image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
+      dialog:false,
 
+      // imagekey:0,
+      // imageShow:true,
+      // avatarAction: 'http://localhost:9000/files/upload',
+      //THIS IS TO ADD THE NEW USER DIALOG
+      // image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
       rules: {
-        bookname:
+        name:
             [{
               required: true, message: 'Prompt your Bookname',trigger: 'blur'
             }],
-        sex:
+        price:
             [{
-              required: true, message: 'Gender cant be empty',trigger: 'change'
+              required: true, message: 'Price cant be empty',trigger: 'change'
             }],
-        nickname:
+        author:
             [{
-              required: true, message: 'Prompt your Nickname', trigger: 'blur'
+              required: true, message: 'Prompt the author', trigger: 'blur'
             }],
-        password:
+        createTime:
             [{
-              required: true, message: 'Prompt your Password', trigger: 'blur'
-            }],
-        address:
-            [{
-              required: true, message: 'Prompt your address', trigger: 'blur'
-            }],
-        age:
-            [{
-              required: true,  message: 'Select your age',  trigger: 'change'
+              required: true, message: 'publication', trigger: 'blur'
             }],
       },
     }
@@ -173,23 +161,27 @@ export default
         },
         openDialog()
         {
-          this.centerDialogVisible = true
+          this.title="Add New Book"
+          this.dialog = true
         },
         onClose()
         {
-          this.centerDialogVisible=false
+          this.bookForm={}
+          this.dialog=false
         },
         edit(row)
         {
-          this.centerDialogVisible = true
+          this.title="Edit the Book"
+          this.dialog = true
           this.bookForm.JSON.parse(JSON.stringify(row))
         },
         addBook()
         {
           if (this.bookForm.id)
           {
-            request.put("/book/update", this.bookForm).then(res => {
-              if (res.code === '0')
+            request.put("/book/update", this.bookForm).then(res =>
+            {
+              if (res.code === '200')
               {
                 this.getBookList()
                 return this.$message.success("You have successfully updated the book")
@@ -199,7 +191,7 @@ export default
           } else {
             request.post("/book/add", this.bookForm).then(res =>
             {
-              if (res.code === '0')
+              if (res.code === '200')
               {
                 this.getBookList()
                 return this.$message.success("You have successfully added a new book")
@@ -207,7 +199,7 @@ export default
               return this.$message.error("You got an error")
             })
           }
-          this.centerDialogVisible = false
+          this.dialog = false
         },
         getBookList()
         {
@@ -215,6 +207,7 @@ export default
               {params: {page: this.page, size: this.size, search: this.search}})
               .then(res =>
               {
+                this.$message.success("Welcome here!")
                 this.bookList = res.data.records
                 this.total = res.data.total
                 console.log(this.total)
@@ -224,7 +217,17 @@ export default
         {
 
         },
-
+        deleteRow(id)
+        {
+          request.delete(`book/delete/${id}`).then(res=>
+          {
+            if(res.code==='200')
+            {
+              this.getBookList()
+              this.$message({type:"success",message:"You have successfully deleted this book"})
+            }
+          })
+        }
       }
 }
 </script>

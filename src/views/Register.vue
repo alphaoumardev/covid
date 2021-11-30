@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import request from "../axios/request";
+
 export default
 {
   name: 'Register',
@@ -87,20 +89,28 @@ export default
   },
   methods:
       {
-        register(){
-          // 判断是否校验成功
-          this.$refs.registerFormRef.validate(async valid =>
+        register()
+        {
+          if(this.registerForm.password !== this.registerForm.confirm)
           {
-            if(!valid){return this.$message.error("You have an error try it again")}
-            // 发送请求判断是否登陆成功
-            const {data:res} = await this.$api.post('Login.vue',this.registerForm)
-
-            if(res.meta.status !== 200){ return this.$message.error('登陆失败')}
-
-            this.$message.success('You have successfully registered!')
-            // 将用户信息保存到sessionStorage中
-            // sessionStorage.setItem('user_session',JSON.stringify(res.data))
-            // await this.$router.push('/home')
+            this.$message({type:"error",message:"The passwords are not same!"})
+            return false
+          }
+          this.$refs['registerFormRef'].validate(valid =>
+          {
+            if(valid)
+            {
+              request.post("user/register", this.registerForm).then(res=>
+              {
+                if(res.code==='200')
+                {
+                  this.$message({type:"success",message:"You have successfully registred!"})
+                  sessionStorage.setItem("user", JSON.stringify(res.data))
+                  this.$router.push('/login')
+                }
+                else  this.$message({type:"error",message:"登陆失败"})
+              })
+            }
           })
         }
       }

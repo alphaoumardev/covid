@@ -29,13 +29,16 @@
         <el-form-item>
           <el-button type="primary" class="login-btn" @click="submitLogin">login</el-button>
         </el-form-item>
+        <el-form-item>
+          Don't you have an account? <el-button type="text"  @click="$router.push('/register')"> Register -->></el-button>
+        </el-form-item>
       </el-form>
     </div>
   </div>
 </template>
 
 <script>
-import request from "@/axios/request";
+import request from "../axios/request";
 
 export default {
   data(){
@@ -66,13 +69,13 @@ export default {
         {
           request.post("user/login", this.form).then(res=>
           {
-            if(res.code==='0')
+            if(res.code==='200')
             {
               this.$message({type:"success",message:"登陆成功"})
-              // sessionStorage.setItem("user", JSON.stringify(res.data))
+              sessionStorage.setItem("user", JSON.stringify(res.data))
               this.$router.push('/users')
             }
-            else  this.$message({type:"success",message:"登陆失败"})
+            else  this.$message({type:"error",message:"登陆失败"})
           })
         }
       })

@@ -93,7 +93,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="Nickname" prop="nickname">
-            <el-input v-model="userForm.nickname" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
+            <el-input v-model="userForm.nickName" placeholder="Your Nickname" clearable  prefix-icon='el-icon-user' :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -106,7 +106,6 @@
             <el-input v-model="userForm.address" placeholder="Your address" prefix-icon='el-icon-place' clearable :style="{width: '100%'}"/>
           </el-form-item>
         </el-col>
-
       </el-form>
     </el-row>
 
@@ -218,7 +217,7 @@ export default
       {
         request.put("/user/update",this.userForm).then(res =>
         {
-          if(res.code==='0')
+          if(res.code==='200')
           {
             this.getUserList()
             return this.$message.success("You have successfully updated the user")
@@ -230,7 +229,7 @@ export default
       {
         request.post("/user/add",this.userForm).then(res =>
         {
-          if(res.code==='0')
+          if(res.code==='200')
           {
             this.getUserList()
             return this.$message.success("You have successfully added a new user")
@@ -259,7 +258,7 @@ export default
     {
       request.delete(`user/delete/${id}`).then(res=>
       {
-        if(res.code=='0')
+        if(res.code==='200')
         {
           this.getUserList()
         }
