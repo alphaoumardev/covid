@@ -1,14 +1,13 @@
 <template>
   <div
-      class="LoginCode disabled-select"
+      class="valid disabled-select"
       :style="`width:${width}; height:${height}`"
-      @click="refreshCode"
-  >
+      @click="refreshCode">
     <span
         v-for="(item, index) in codeList"
         :key="index"
-        :style="getStyle(item)"
-    >{{ item.code }}</span>
+        :style="getStyle(item)">
+    {{ item.code }}</span>
   </div>
 </template>
 
@@ -38,11 +37,16 @@ export default
       type: Number,
       default: 4
     },
-    refresh: { type: Number }
+    refresh:
+    {
+      type: Number
+    }
   },
   data ()
   {
-    return {codeList: []}
+    return {
+      codeList: []
+    }
   },
   watch:
   {
@@ -94,14 +98,14 @@ export default
 </script>
 
 <style scoped>
-.LoginCode
+.valid
 {
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
 }
-.LoginCode span
+.valid span
 {
   display: inline-block;
 }

@@ -16,14 +16,15 @@
           <el-input  v-model="form.username" placeholder="Please input your username" prefix-icon="el-icon-user" />
         </el-form-item>
         <el-form-item prop="password" label="Password">
-          <el-input v-model="form.password" placeholder="Please input your password" show-password prefix-icon="iconfont icon-3702mima" />
+          <el-input v-model="form.password" placeholder="Please input your password" show-password prefix-icon="el-icon-lock" />
         </el-form-item>
-        <el-form-item prop="verifyCode">
-          <div class="verifyCode_box">
-            <el-input v-model="form.validCode" type="text" style="width: 60%;" placeholder="please input the code" prefix-icon="el-icon-key"/>
-            <LoginCode @input="createValidCode"/>
-          </div>
-        </el-form-item>
+
+          <el-form-item>
+            <div style="display: flex; background-color: #86b7fe;">
+              <el-input prefix-icon="el-icon-key" v-model="form.validCode" style="width: 60%;" placeholder="input the code"></el-input>
+              <LoginCode @input="createValidCode" />
+            </div>
+          </el-form-item>
 
         <el-form-item>
           <el-button type="primary" class="login-btn" @click="submitLogin">login</el-button>
@@ -42,12 +43,12 @@ import LoginCode from "../components/LoginCode";
 export default
 {
   name:"Login",
-  components:"LoginCode",
+  components:{LoginCode},
   data()
   {
     return {
       form:{},
-      validCode:'',
+      validCode: '',
       rules:
       {
         username:
@@ -63,18 +64,29 @@ export default
       }
     }
   },
+  mounted() {sessionStorage.removeItem("user")},
   methods:
   {
-    createValidCode(data)
-    {
-      this.validCode=data
-    },
+     createValidCode(data)
+     {
+      this.validCode = data
+     },
     submitLogin()
     {
       this.$refs['form'].validate(valid =>
       {
         if(valid)
         {
+          if(!this.form.validCode)
+          {
+            this.$message({type:"error",message:"Please input the code! "})
+            return
+          }
+          if(this.form.validCode.toLowerCase() !== this.form.validCode.toLowerCase())
+          {
+            this.$message({type:"error",message:"The validCode is incorrect!"})
+            return
+          }
           request.post("user/login", this.form).then(res=>
           {
             if(res.code==='200')
@@ -87,7 +99,38 @@ export default
           })
         }
       })
-  },
+      /*this.$refs['form'].validate((valid) => {*/
+      /*        if (valid) {*/
+      /*          if (!this.form.validCode) {*/
+      /*            this.$message.error("请填写验证码")*/
+      /*            return*/
+      /*              }*/
+      /*          if(this.form.validCode.toLowerCase() !== this.validCode.toLowerCase()) {*/
+      /*            this.$message.error("验证码错误")*/
+      /*            return*/
+      /*              }*/
+      /*          request.post("/user/login", this.form).then(res => {*/
+      /*            if (res.code === '200') {*/
+      /*              this.$message({*/
+      /*                    type: "success",*/
+      /*                message: "登录成功"*/
+      /*              })*/
+      /*              sessionStorage.setItem("user", JSON.stringify(res.data))  // 缓存用户信息*/
+
+      //               // 登录成功的时候更新当前路由
+      //               //   activeRouter()
+      //               this.$router.push("/users")  //登录成功之后进行页面的跳转，跳转到主页
+      //
+      //               } else {
+      //               this.$message({
+      //                     type: "error",
+      //                 message: res.msg
+      //               })
+      //             }
+      //           })
+      //         }
+      //       })
+      }
   },
 }
 </script>
@@ -186,3 +229,4 @@ export default
 /*  max-width: none;*/
 /*}*/
 </style>
+
