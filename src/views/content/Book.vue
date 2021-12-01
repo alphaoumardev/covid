@@ -23,6 +23,11 @@
         <el-table-column align="center" prop="cover" label="Cover" width="200" />
         <el-table-column align="center" prop="" label="Operations" width="170" >
           <template #default="scope">
+            <el-image style="width: 100px; height: 100px;" :src="scope.row.cover" :preview-src-list="[scope.row.cover]"/>
+          </template>
+        </el-table-column>
+        <el-table-column align="center"  label="Operations" width="170" >
+          <template #default="scope">
             <el-button type="primary" icon="el-icon-edit" circle @click="edit(scope.row)"/>
             <el-popconfirm title="Are you sure to delete it?" @confirm="deleteRow(scope.row.id)">
               <template #reference>
@@ -42,50 +47,46 @@
           @current-change="handleCurrentChange"
       ></el-pagination>
     </el-card>
-    <!--  The dialog to add the new bookForm-->
+    <!--  The dialog to add the new form-->
     <el-dialog v-model="dialog" :title="title" @close="onClose" >
       <el-row :gutter="15">
-        <el-form ref="elForm" :model="bookForm" :rules="rules" size="medium" label-width="100px" label-position="left">
+        <el-form ref="elForm" :model="form" :rules="rules" size="medium" label-width="100px" label-position="left">
           <el-col :span="24">
-<!--            <el-form-item label="Avatar"  required>-->
-<!--              <img v-if="image"  :src="image" alt="avatar" class="avatar"/>-->
-<!--              <i v-else class="el-icon-plus avatar-uploader-icon"/>-->
-<!--              <el-upload-->
-<!--                  ref="avatar"-->
-<!--                  v-model="image"-->
-<!--                  :action="avatarAction"-->
-<!--                  :before-upload="avatarBeforeUpload"-->
-<!--                  list-type="picture" accept="image/*"-->
-<!--                  :auto-upload="true"-->
-<!--                  :show-file-list="false"-->
-<!--                  :on-success="handleSuccess"-->
-<!--                  @close="closeImage"-->
-<!--                  v-show="imageShow"-->
-<!--                  :data="imagekey"-->
-<!--                  :on-change="handleChange"-->
-<!--              >-->
-<!--                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>-->
-<!--              </el-upload>-->
-<!--            </el-form-item>-->
+            <el-form-item label="Avatar"  required>
+              <img v-if="image"  :src="image" alt="avatar" class="avatar"/>
+              <i v-else class="el-icon-plus avatar-uploader-icon"/>
+              <el-upload
+                  ref="ref"
+                  v-model="image"
+                  :action="avatarAction"
+                  :before-upload="avatarBeforeUpload"
+                  list-type="picture" accept="image/*"
+                  :auto-upload="true"
+                  :show-file-list="false"
+                  :on-success="handleSuccess"
+                  v-show="true">
+                <el-button size="small" type="primary" icon="el-icon-upload">Change</el-button>
+              </el-upload>
+            </el-form-item>
           </el-col><br>
           <el-col :span="12">
             <el-form-item label="Bookname" prop="name">
-              <el-input v-model="bookForm.name" placeholder="The Book name" clearable  prefix-icon='el-icon-book-solid' :style="{width: '100%'}"/>
+              <el-input v-model="form.name" placeholder="The Book name" clearable  prefix-icon='el-icon-book-solid' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Price" prop="price">
-              <el-input v-model="bookForm.price" placeholder="The price" clearable   prefix-icon='el-icon-lock' :style="{width: '100%'}"/>
+              <el-input v-model="form.price" placeholder="The price" clearable   prefix-icon='el-icon-lock' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Author" prop="author">
-              <el-input v-model="bookForm.author" placeholder="The author" clearable  prefix-icon='el-icon-book' :style="{width: '100%'}"/>
+              <el-input v-model="form.author" placeholder="The author" clearable  prefix-icon='el-icon-book' :style="{width: '100%'}"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="Publication" prop="createTime">
-              <el-date-picker v-model="bookForm.createTime" format="yyyy-MM-dd" value-format="yyyy-MM-dd" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
+              <el-date-picker v-model="form.createTime" format="YYYY-MM-DD" value-format="YYYY-MM-DD" :style="{width: '100%'}" placeholder="Your Birthday" clearable/>
             </el-form-item>
           </el-col>
         </el-form>
@@ -114,13 +115,11 @@ export default
       total:0,
       title:'',
       search:'',
+      image:'',
       bookList:[],
-      bookForm:{},
+      form:{},
       dialog:false,
-
-      // imagekey:0,
-      // imageShow:true,
-      // avatarAction: 'http://localhost:9000/files/upload',
+      avatarAction: 'http://localhost:9000/files/upload',
       //THIS IS TO ADD THE NEW USER DIALOG
       // image: "https://diallo.oss-cn-shanghai.aliyuncs.com/2021-29-05/fcd1ef7f41454116805132311774362f.jpg?versionId=CAEQLBiBgIDRyJO75xciIDRiMjY2YWYxYzBmZTRiYjE5YjFjOWJhMGJmNGRiZDc0",
       rules: {
@@ -163,23 +162,30 @@ export default
         {
           this.title="Add New Book"
           this.dialog = true
+          this.$nextTick(()=>
+          {
+            if(this.$refs['ref'])
+            {
+              this.$refs['ref'].clearFiles()
+            }
+          })
         },
         onClose()
         {
-          this.bookForm={}
+          this.form={}
           this.dialog=false
         },
         edit(row)
         {
+          this.form=JSON.parse(JSON.stringify(row))
           this.title="Edit the Book"
           this.dialog = true
-          this.bookForm.JSON.parse(JSON.stringify(row))
         },
         addBook()
         {
-          if (this.bookForm.id)
+          if (this.form.id)
           {
-            request.put("/book/update", this.bookForm).then(res =>
+            request.put("/book/update", this.form).then(res =>
             {
               if (res.code === '200')
               {
@@ -189,7 +195,7 @@ export default
               return this.$message.error("You got an error")
             })
           } else {
-            request.post("/book/add", this.bookForm).then(res =>
+            request.post("/book/add", this.form).then(res =>
             {
               if (res.code === '200')
               {
@@ -207,16 +213,12 @@ export default
               {params: {page: this.page, size: this.size, search: this.search}})
               .then(res =>
               {
-                this.$message.success("Welcome here!")
                 this.bookList = res.data.records
                 this.total = res.data.total
                 console.log(this.total)
               })
         },
-        handleChange()
-        {
 
-        },
         deleteRow(id)
         {
           request.delete(`book/delete/${id}`).then(res=>
@@ -227,7 +229,52 @@ export default
               this.$message({type:"success",message:"You have successfully deleted this book"})
             }
           })
-        }
+        },
+        avatarBeforeUpload(file)
+        {
+          let isRightSize = file.size / 1024 / 1024 < 2
+          if (!isRightSize)
+          {
+            this.$message.error('The photo is more than 2MB please change it and try again')
+          }
+          let isAccept = new RegExp('image/*').test(file.type)
+          if (!isAccept) {
+            this.$message.error('You have to choose an image ')
+          }
+          return isRightSize && isAccept
+        },
+
+        handleSuccess (res)
+        {
+          this.form.cover=res.data
+          console.log(res.data)
+          this.$message.success("You have successfully uploaded a new cover")
+
+        },
+        // closeImage()
+        // {
+        //   this.imageShow=true
+        //   this.imagekey = this.imagekey + 1
+        //   this.image = this.user.avatar
+        //   this.user.avatar = res.data.url
+        // },
+        // async addUser()
+        // {
+        //   const {data:res}=await addUser(this.user)
+        //   if(res.code===200)
+        //   {
+        //     console.log(res.code)
+        //     this.$message.success("You have successfully added a new user")
+        //     this.user={}
+        //     this.$emit('getUserList')
+        //     this.$emit('getDepartment')
+        //   }
+        //
+        //   else
+        //   {
+        //     // this.$message.error("Adding new user has failed"+res.message)
+        //   }
+        // }
       }
 }
 </script>

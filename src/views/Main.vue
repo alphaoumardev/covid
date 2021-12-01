@@ -3,8 +3,9 @@
     <el-container class="main-container">
       <el-header class="el-header">
         <div class="left-box">
-          <img src="../assets/img/timg.gif" alt="aa">
-          <span>Covid-19 MS</span>
+                      <img src="../assets/img/log.jpg" alt="Aj">
+
+          <span>Diallo MS</span>
         </div>
         <div>
           <el-menu
@@ -19,13 +20,16 @@
             <template class="dow" v-for="item in menuList" :key="item.id">
               <el-submenu class="dow" :index="item.id+''" :desabled="item.desabled" v-if="item.children.length>0">
                 <template #title>
-                  <i :class="item.icon"/><span>{{item.menuName }}</span>
+                  <i :class="item.icon"/><span>{{item.menuName}}</span>
                 </template>
                 <MainTree :menuList="item.children"/>
               </el-submenu>
               <el-menu-item class="dow" v-else :index="item.id" :desabled="item.desabled"  :route="item.url+''" @click="path(item.url)">
-                <i :class="item.icon"/>
-                <span>{{item.menuName }}</span>
+                <div >
+                  <i :class="item.icon"/>
+                  <span>{{item.menuName }}</span>
+                </div>
+
               </el-menu-item>
 
             </template>
@@ -34,7 +38,7 @@
 
         <div class="right-box">
             <el-dropdown >
-              <img src="../assets/img/timg.gif" alt="Aj">
+              <img src="../assets/img/timg.gif" alt="aa">
 <!--              <span>{{user.nickName}}</span>-->
               <template #dropdown>
                 <el-dropdown-menu>
@@ -46,7 +50,6 @@
             </el-dropdown>
         </div>
       </el-header>
-<!--      <img src="../assets/img/logo4.png" alt="alpha"/>-->
 
       <el-container>
 
@@ -63,6 +66,7 @@
 <script>
 import MainTree from "@/components/MainTree";
 import Footer from "../components/Footer";
+import request from "../axios/request";
 export default
 {
   name: "Main",
@@ -71,12 +75,13 @@ export default
       Footer,
       MainTree
     },
-  // props:['user'],
+  props:['user'],
   data()
   {
     return{
       isCallapse:false,
       activePath:'',
+      user:{},
       menuList:
       [
         {
@@ -133,9 +138,9 @@ export default
         {
           "id": 321,
           "parentId": 1,
-          "menuName": "Attachements",
-          "url": "/attachments",
-          "icon": "el-icon-picture-outline",
+          "menuName": "News",
+          "url": "/news",
+          "icon": "el-icon-copy-document",
           "orderNum": 2,
           "open": 1,
           "disabled": false,
@@ -518,6 +523,18 @@ export default
     }
       ]
   }},
+  created()
+  {
+    // const userStr = sessionStorage.getItem("user")||"{}"
+    // this.user =JSON.parse(userStr)
+    // request.get("/user/list",this.user.id).then(res=>
+    // {
+    //   if(res.code==="200")
+    //   {
+    //     this.user=res.data
+    //   }
+    // })
+  },
   methods:
     {
       path(paths)

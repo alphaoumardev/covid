@@ -27,6 +27,11 @@
       <el-table-column align="center" prop="nickName" label="nickname" />
       <el-table-column align="center" prop="age" label="Age"   sortable/>
       <el-table-column align="center" prop="address" label="Address" width="200" />
+      <el-table-column align="center"  label="Roles" >
+        <template #default="scope">
+          <span v-if="scope.row.roles===1? 'Admin' :'Common'"></span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" prop="" label="Operations" width="170" >
         <template #default="scope">
           <el-button type="primary" icon="el-icon-edit" circle @click="edit(scope.row)"/>
@@ -132,6 +137,7 @@ export default
       total:0,
       search:'',
       title:'',
+      user:{},
       userList:[],
       userForm:{},
       dialog:false,
@@ -182,6 +188,8 @@ export default
   created()
   {
     this.getUserList()
+    let userStr = sessionStorage.getItem("user")||"{}"
+    this.user =JSON.parse(userStr)
   },
   methods:
   {
@@ -209,7 +217,7 @@ export default
     {
       this.title="Edit User"
       this.dialog=true
-      this.userForm.JSON.parse(JSON.stringify(row))
+      this.userForm=JSON.parse(JSON.stringify(row))
     },
     addUser()
     {

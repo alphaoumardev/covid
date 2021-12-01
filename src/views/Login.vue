@@ -18,13 +18,12 @@
         <el-form-item prop="password" label="Password">
           <el-input v-model="form.password" placeholder="Please input your password" show-password prefix-icon="iconfont icon-3702mima" />
         </el-form-item>
-<!--        <el-form-item prop="verifyCode">-->
-<!--          <div class="verifyCode_box">-->
-<!--            <el-input v-model="form.verifyCode" type="text" placeholder="please input the code" prefix-icon="el-icon-mobile"-->
-<!--                      class="verifyCode"></el-input>-->
-<!--            <img src="../assets/img/code.gif" alt="" class="verifyCode_img" @click="newVerifyCode">-->
-<!--          </div>-->
-<!--        </el-form-item>-->
+        <el-form-item prop="verifyCode">
+          <div class="verifyCode_box">
+            <el-input v-model="form.validCode" type="text" style="width: 60%;" placeholder="please input the code" prefix-icon="el-icon-key"/>
+            <LoginCode @input="createValidCode"/>
+          </div>
+        </el-form-item>
 
         <el-form-item>
           <el-button type="primary" class="login-btn" @click="submitLogin">login</el-button>
@@ -39,11 +38,16 @@
 
 <script>
 import request from "../axios/request";
-
-export default {
-  data(){
+import LoginCode from "../components/LoginCode";
+export default
+{
+  name:"Login",
+  components:"LoginCode",
+  data()
+  {
     return {
       form:{},
+      validCode:'',
       rules:
       {
         username:
@@ -61,6 +65,10 @@ export default {
   },
   methods:
   {
+    createValidCode(data)
+    {
+      this.validCode=data
+    },
     submitLogin()
     {
       this.$refs['form'].validate(valid =>
@@ -80,7 +88,7 @@ export default {
         }
       })
   },
-},
+  },
 }
 </script>
 
@@ -103,7 +111,7 @@ export default {
   .login-box
   {
     width: 500px;
-    height: 400px;
+    height: 500px;
     background: #fff;
     padding: 50px;
     border-radius: 6px;
@@ -117,9 +125,9 @@ export default {
     border: 5px solid #93defe;
     border-radius: 100px;
     text-align: center;
-    line-height: 110px;
+    line-height: 100px;
     position: absolute;
-    top: -60px;
+    top: -40px;
     right: 190px;
     background: #fff;
     }
@@ -151,8 +159,6 @@ export default {
 .verifyCode_box
 {
   display: flex;
-
-
 }
 .verifyCode {
   width: 70%;
