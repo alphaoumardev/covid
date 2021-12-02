@@ -8,24 +8,41 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import('@/views/About.vue')
+    component: () => import('../views/About.vue')
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/register',
     name: 'Register',
     component: () => import('../views/Register.vue')
   },
+//   {
+//   path: '/',
+//     name: 'Layout',
+//     component: Layout,
+//     redirect: "/welcome",
+//     children: [
+//   {
+//     path: '/welcome',
+//     name: 'Welcome',
+//     component: () => import("@/views/content/Welcome"),
+//   },
+// ]},
   {
     path: '/main',
     name: 'Main',
     component: () => import('../views/Main.vue'),
     children:
       [
+        {
+          path: '/welcome',
+          name: 'Welcome',
+          component: () => import('../views/content/Welcome.vue')
+        },
         {
           path: '/users',
           name: 'Users',

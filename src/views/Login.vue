@@ -20,7 +20,7 @@
         </el-form-item>
 
           <el-form-item>
-            <div style="display: flex; background-color: #86b7fe;">
+            <div style="display: flex; background-color: #86b7fe; border-radius: 5px;">
               <el-input prefix-icon="el-icon-key" v-model="form.validCode" style="width: 60%;" placeholder="input the code"></el-input>
               <LoginCode @input="createValidCode" />
             </div>
@@ -52,15 +52,15 @@ export default
       rules:
       {
         username:
-            [
-              { required: true, message: '请输入登陆账户', trigger: 'blur' },
-              { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-            ],
+        [
+          { required: true, message: '请输入登陆账户', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        ],
         password:
-            [
-              { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
-            ]
+        [
+          { required: true, message: '请输入登陆密码', trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -99,38 +99,7 @@ export default
           })
         }
       })
-      /*this.$refs['form'].validate((valid) => {*/
-      /*        if (valid) {*/
-      /*          if (!this.form.validCode) {*/
-      /*            this.$message.error("请填写验证码")*/
-      /*            return*/
-      /*              }*/
-      /*          if(this.form.validCode.toLowerCase() !== this.validCode.toLowerCase()) {*/
-      /*            this.$message.error("验证码错误")*/
-      /*            return*/
-      /*              }*/
-      /*          request.post("/user/login", this.form).then(res => {*/
-      /*            if (res.code === '200') {*/
-      /*              this.$message({*/
-      /*                    type: "success",*/
-      /*                message: "登录成功"*/
-      /*              })*/
-      /*              sessionStorage.setItem("user", JSON.stringify(res.data))  // 缓存用户信息*/
-
-      //               // 登录成功的时候更新当前路由
-      //               //   activeRouter()
-      //               this.$router.push("/users")  //登录成功之后进行页面的跳转，跳转到主页
-      //
-      //               } else {
-      //               this.$message({
-      //                     type: "error",
-      //                 message: res.msg
-      //               })
-      //             }
-      //           })
-      //         }
-      //       })
-      }
+    }
   },
 }
 </script>
@@ -149,7 +118,7 @@ export default
   {
     margin-right: 100px;
   }
-  .photo{border-radius: 10px;}
+  /*.photo{border-radius: 10px;}*/
 
   .login-box
   {
@@ -199,22 +168,22 @@ export default
     {
       width: 100%;
     }
-.verifyCode_box
-{
-  display: flex;
-}
-.verifyCode {
-  width: 70%;
-  justify-content: left;}
+/*.verifyCode_box*/
+/*{*/
+/*  display: flex;*/
+/*}*/
+/*.verifyCode {*/
+/*  width: 70%;*/
+/*  justify-content: left;}*/
 
-.verifyCode_img {
-  padding-left: 5px;
-  padding-top: 2px;
-  width: 25%;
-  height: 35px;
-  justify-content: flex-end;
-  cursor: pointer;
-}
+/*.verifyCode_img {*/
+/*  padding-left: 5px;*/
+/*  padding-top: 2px;*/
+/*  width: 25%;*/
+/*  height: 35px;*/
+/*  justify-content: flex-end;*/
+/*  cursor: pointer;*/
+/*}*/
 /*img {*/
 /*  width: 100%;*/
 /*  height: 100%;*/
