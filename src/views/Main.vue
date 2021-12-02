@@ -151,8 +151,8 @@ export default
         {
           "id": 4,
           "parentId": 1,
-          "menuName": "Permissions",
-          "url": "/menus",
+          "menuName": "Map",
+          "url": "/map",
           "icon": "el-icon-help",
           "orderNum": 3,
           "open": 0,

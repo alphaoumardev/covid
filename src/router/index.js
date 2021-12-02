@@ -57,6 +57,11 @@ const routes = [
           path: '/news',
           name: 'News',
           component: () => import('../views/content/News.vue'),
+        },
+        {
+          path: '/map',
+          name: 'Map',
+          component: () => import('../views/content/Map.vue'),
         }
       ]
   },
