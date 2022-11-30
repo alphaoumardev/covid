@@ -9,7 +9,7 @@
         </div>
         <div>
           <el-menu
-                   :dafault-active="$route.path"
+                   :dafault-active="this.$route.path"
                    mode="horizontal"
                    class="el-menu-demo"
                    background-color="#545c64"
@@ -42,9 +42,9 @@
 <!--              <span>{{user.nickName}}</span>-->
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item @click="$router.push('/welcome')"><i class="el-icon-house"/>Home</el-dropdown-item>
-                  <el-dropdown-item @click="$router.push('/users')"><i class="el-icon-microphone"/>My Account</el-dropdown-item>
-                  <el-dropdown-item @click="$router.push('/login')"><i class="el-icon-switch-button"/>Logout</el-dropdown-item>
+                  <el-dropdown-item @click="this.$router.push('/welcome')"><i class="el-icon-house"/>Home</el-dropdown-item>
+                  <el-dropdown-item @click="this.$router.push('/users')"><i class="el-icon-microphone"/>My Account</el-dropdown-item>
+                  <el-dropdown-item @click="this.$router.push('/login')"><i class="el-icon-switch-button"/>Logout</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
             </el-dropdown>
@@ -52,7 +52,6 @@
       </el-header>
 
       <el-container>
-
         <el-main>
           <router-view/>
         </el-main>
@@ -64,7 +63,7 @@
 </template>
 
 <script>
-import MainTree from "@/components/MainTree";
+import MainTree from "../components/MainTree";
 import Footer from "../components/Footer";
 import request from "../axios/request";
 export default
@@ -525,15 +524,15 @@ export default
   }},
   created()
   {
-    // const userStr = sessionStorage.getItem("user")||"{}"
-    // this.user =JSON.parse(userStr)
-    // request.get("/user/list",this.user.id).then(res=>
-    // {
-    //   if(res.code==="200")
-    //   {
-    //     this.user=res.data
-    //   }
-    // })
+    const userStr = sessionStorage.getItem("user")||"{}"
+    this.user =JSON.parse(userStr)
+    request.get("/user/list",this.user.id).then(res=>
+    {
+      if(res.code==="200")
+      {
+        this.user=res.data
+      }
+    })
   },
   methods:
     {

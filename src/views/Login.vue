@@ -30,7 +30,7 @@
           <el-button type="primary" class="login-btn" @click="submitLogin">login</el-button>
         </el-form-item>
         <el-form-item>
-          Don't you have an account? <el-button type="text"  @click="$router.push('/register')"> Register -->></el-button>
+          Don't you have an account? <el-button type="text"  @click="this.$router.push('/register')"> Register -->></el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -93,7 +93,7 @@ export default
             {
               this.$message({type:"success",message:"登陆成功"})
               sessionStorage.setItem("user", JSON.stringify(res.data))
-              this.$router.push('/users')
+              this.$router.push('/welcome')
             }
             else  this.$message({type:"error",message:"登陆失败"})
           })

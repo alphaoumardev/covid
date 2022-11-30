@@ -62,12 +62,11 @@ export default
         gender:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
             ],
         address:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+              { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
             ],
         username:
             [
@@ -77,12 +76,12 @@ export default
         password:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+              { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
             ],
         confirm:
             [
               { required: true, message: '请输入登陆密码', trigger: 'blur' },
-              { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+              { min: 3, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
             ]
       }
     }

@@ -14,7 +14,6 @@
 
 <!--    The table To display the users-->
     <el-table :data="userList" stripe style="width: 100%" border max-height="400">
-
       <el-table-column align="center" prop="id" label="#"  width="80"  />
       <el-table-column align="center" prop="username" label="Username"  />
       <el-table-column align="center" prop="sex" label="Gender"  >
